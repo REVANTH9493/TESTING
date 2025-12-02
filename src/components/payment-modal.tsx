@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { generateUpiUrl } from "@/lib/upi";
 import { toast } from "@/hooks/use-toast";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -33,21 +34,12 @@ export function PaymentModal({
   const [upiId, setUpiId] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const phonePeQrImage = PlaceHolderImages.find(p => p.id === 'phonepe-qr');
+
   if (!course) {
     return null;
   }
   
-  const baseUpiUrl = generateUpiUrl({
-    payeeVpa: "ulearn@example",
-    payeeName: "U-Learn",
-    amount: course.price,
-    transactionNote: `Course: ${course.title}`
-  });
-
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-    baseUpiUrl
-  )}`;
-
   const handleSimulatePayment = () => {
     setIsProcessing(true);
     // Simulate a network request
@@ -89,16 +81,17 @@ export function PaymentModal({
         <div className="py-4 text-center space-y-4">
           <div className="flex justify-center">
             <div className="p-4 bg-white rounded-lg inline-block shadow-md">
-              <Image
-                src={qrCodeUrl}
-                alt="UPI QR Code"
+              {phonePeQrImage && <Image
+                src={phonePeQrImage.imageUrl}
+                alt="PhonePe UPI QR Code"
                 width={200}
                 height={200}
-              />
+                data-ai-hint={phonePeQrImage.imageHint}
+              />}
             </div>
           </div>
           <p className="text-sm text-muted-foreground">
-            Scan the QR code with any UPI app
+            Scan & Pay Using PhonePe App
           </p>
           <div className="text-lg font-semibold">
             Total Amount: <span className="text-primary">₹{course.price}</span>
