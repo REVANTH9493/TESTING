@@ -19,21 +19,25 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Clock, BarChart, PlayCircle, FileText } from "lucide-react";
+import { Clock, BarChart, PlayCircle, FileText, CheckCircle } from "lucide-react";
 import { PaymentModal } from "@/components/payment-modal";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { useMyLearning } from "@/hooks/use-my-learning";
 
 export default function CourseDetailPage() {
   const params = useParams();
   const courseId = params.id as string;
 
   const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
+  const { enrolledCourses, addCourse } = useMyLearning();
   const course = courses.find((c) => c.id === courseId);
 
   if (!course) {
     notFound();
   }
-  
+
+  const isEnrolled = enrolledCourses.some(enrolledCourse => enrolledCourse.id === course.id);
+
   const courseImage = PlaceHolderImages.find(p => p.id === course.imageId);
   const instructorImage = PlaceHolderImages.find(p => p.id === course.instructor.avatarId);
 
@@ -106,13 +110,20 @@ export default function CourseDetailPage() {
             <CardContent className="p-0">
               <div className="p-6">
                 <h2 className="text-3xl font-bold">₹{course.price}</h2>
-                <Button
-                  className="w-full mt-4"
-                  size="lg"
-                  onClick={() => setPaymentModalOpen(true)}
-                >
-                  Enroll Now
-                </Button>
+                  {isEnrolled ? (
+                     <Button className="w-full mt-4" size="lg" disabled>
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        Enrolled
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w-full mt-4"
+                      size="lg"
+                      onClick={() => setPaymentModalOpen(true)}
+                    >
+                      Enroll Now
+                    </Button>
+                  )}
               </div>
               <div className="bg-muted/50 p-6 text-sm space-y-3">
                 <p className="font-bold">This course includes:</p>
@@ -146,11 +157,15 @@ export default function CourseDetailPage() {
           </Card>
         </div>
       </div>
-      <PaymentModal
+      {!isEnrolled && <PaymentModal
         isOpen={isPaymentModalOpen}
         onOpenChange={setPaymentModalOpen}
         course={course}
-      />
+        onPaymentSuccess={() => {
+            addCourse(course);
+            setPaymentModalOpen(false);
+        }}
+      />}
     </>
   );
 }

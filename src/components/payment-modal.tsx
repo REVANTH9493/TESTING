@@ -21,14 +21,17 @@ interface PaymentModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   course: Course;
+  onPaymentSuccess: () => void;
 }
 
 export function PaymentModal({
   isOpen,
   onOpenChange,
   course,
+  onPaymentSuccess,
 }: PaymentModalProps) {
   const [upiId, setUpiId] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   if (!course) {
     return null;
@@ -45,6 +48,19 @@ export function PaymentModal({
     baseUpiUrl
   )}`;
 
+  const handleSimulatePayment = () => {
+    setIsProcessing(true);
+    // Simulate a network request
+    setTimeout(() => {
+      toast({
+        title: "Payment Successful!",
+        description: `You have successfully enrolled in "${course.title}".`,
+      });
+      onPaymentSuccess();
+      setIsProcessing(false);
+    }, 1500);
+  };
+  
   const handlePayWithId = () => {
     if (!upiId) {
       toast({
@@ -54,15 +70,10 @@ export function PaymentModal({
       })
       return;
     }
-    const upiUrlWithId = generateUpiUrl({
-      payeeVpa: upiId,
-      payeeName: "U-Learn",
-      amount: course.price,
-      transactionNote: `Course: ${course.title}`
-    });
-    window.location.href = upiUrlWithId;
+    // In a real app, this would trigger a payment request to the user's UPI ID.
+    // For this demo, we'll just simulate a successful payment.
+    handleSimulatePayment();
   };
-
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -113,17 +124,17 @@ export function PaymentModal({
                 placeholder="yourname@bank" 
                 value={upiId}
                 onChange={(e) => setUpiId(e.target.value)}
+                disabled={isProcessing}
               />
-              <Button onClick={handlePayWithId}>
-                Pay
+              <Button onClick={handlePayWithId} disabled={isProcessing}>
+                {isProcessing ? "Processing..." : "Pay"}
               </Button>
             </div>
           </div>
-
         </div>
         <DialogFooter className="sm:justify-center">
-           <Button asChild size="lg" className="w-full sm:w-auto">
-            <a href={baseUpiUrl}>Pay with UPI App on Mobile</a>
+           <Button size="lg" className="w-full sm:w-auto" onClick={handleSimulatePayment} disabled={isProcessing}>
+            {isProcessing ? "Processing..." : "Simulate Direct Payment"}
           </Button>
         </DialogFooter>
       </DialogContent>
