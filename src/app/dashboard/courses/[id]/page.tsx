@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { courses, type Course } from "@/lib/courses";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,9 +23,12 @@ import { Clock, BarChart, PlayCircle, FileText } from "lucide-react";
 import { PaymentModal } from "@/components/payment-modal";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
+export default function CourseDetailPage() {
+  const params = useParams();
+  const courseId = params.id as string;
+
   const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
-  const course = courses.find((c) => c.id === params.id);
+  const course = courses.find((c) => c.id === courseId);
 
   if (!course) {
     notFound();
