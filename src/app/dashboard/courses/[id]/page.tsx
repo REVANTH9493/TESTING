@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 import { courses, type Course } from "@/lib/courses";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -29,18 +28,30 @@ export default function CourseDetailPage() {
   const courseId = params.id as string;
 
   const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
-  const { enrolledCourses, addCourse } = useMyLearning();
+  const { enrolledCourses, addCourse, isLoaded } = useMyLearning();
+  
   const course = courses.find((c) => c.id === courseId);
+
+  // Derived state is better than a separate state for isEnrolled
+  const isEnrolled = isLoaded && enrolledCourses.some(enrolledCourse => enrolledCourse.id === course?.id);
 
   if (!course) {
     notFound();
   }
 
-  const isEnrolled = enrolledCourses.some(enrolledCourse => enrolledCourse.id === course.id);
-
   const courseImage = PlaceHolderImages.find(p => p.id === course.imageId);
   const instructorImage = PlaceHolderImages.find(p => p.id === course.instructor.avatarId);
 
+  const handleEnroll = () => {
+    if (!isEnrolled) {
+      setPaymentModalOpen(true);
+    }
+  }
+
+  const handlePaymentSuccess = () => {
+    addCourse(course);
+    setPaymentModalOpen(false);
+  }
 
   return (
     <>
@@ -119,7 +130,7 @@ export default function CourseDetailPage() {
                     <Button
                       className="w-full mt-4"
                       size="lg"
-                      onClick={() => setPaymentModalOpen(true)}
+                      onClick={handleEnroll}
                     >
                       Enroll Now
                     </Button>
@@ -161,10 +172,7 @@ export default function CourseDetailPage() {
         isOpen={isPaymentModalOpen}
         onOpenChange={setPaymentModalOpen}
         course={course}
-        onPaymentSuccess={() => {
-            addCourse(course);
-            setPaymentModalOpen(false);
-        }}
+        onPaymentSuccess={handlePaymentSuccess}
       />}
     </>
   );
