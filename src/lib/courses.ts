@@ -94,7 +94,7 @@ export const courses: Course[] = [
     ],
     modules: [
         { title: "Module 1: Swift Basics", lessons: [{title: "Variables and Constants", duration: "20:00", type: "video"}] },
-        { title: "Module 2: SwiftUI", lessons: [{title: "Introduction to SwiftUI", duration: "50:30", type: "video"}] },
+        { title: "Module 2: SwiftUI", lessons: [{title: "Introduction to SwiftUI", duration: "50:30", type:"video"}] },
     ]
   },
   {
