@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Wallet } from "lucide-react";
 import Link from "next/link";
 import { generateUpiUrl } from "@/lib/upi";
 
@@ -84,7 +84,7 @@ export default function PaymentPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-4">
                 <div className="flex justify-center">
                     <div className="p-4 bg-white rounded-lg inline-block shadow-md">
                     <Image
@@ -97,20 +97,28 @@ export default function PaymentPage() {
                     />
                     </div>
                 </div>
-                 <p className="font-semibold text-foreground">Mr Nagidi Revanth</p>
-                <p className="text-sm text-muted-foreground">
-                    Scan the QR code with any UPI app
-                </p>
-                <div className="text-lg font-semibold">
-                    Amount: <span className="text-primary">₹{course.price}</span>
+                <div className="space-y-2">
+                    <p className="font-semibold text-foreground">Mr Nagidi Revanth</p>
+                    <p className="text-sm text-muted-foreground">
+                        Scan the QR code with any UPI app
+                    </p>
+                    <div className="text-lg font-semibold">
+                        Amount: <span className="text-primary">₹{course.price}</span>
+                    </div>
                 </div>
+                 <Button asChild className="w-full md:hidden">
+                    <a href={upiUrl}>
+                      <Wallet className="mr-2 h-4 w-4" />
+                      Pay with UPI App
+                    </a>
+                </Button>
             </div>
             <div className="space-y-4">
                 <div className="text-sm text-muted-foreground p-4 border rounded-lg bg-muted/50">
                     <h4 className="font-semibold text-foreground mb-2">Instructions:</h4>
                     <ol className="list-decimal list-inside space-y-1">
                         <li>Open your UPI payment app (Google Pay, PhonePe, etc.).</li>
-                        <li>Scan the QR code shown on the left.</li>
+                        <li>Scan the QR code or use the "Pay with UPI" button.</li>
                         <li>Confirm the payment of <strong>₹{course.price}</strong>.</li>
                         <li>After payment, find the Transaction ID (or UPI Ref ID).</li>
                         <li>Enter the ID below and click "Verify & Enroll".</li>
