@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { courses, type Course } from "@/lib/courses";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,20 +19,18 @@ import {
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Clock, BarChart, PlayCircle, FileText, CheckCircle } from "lucide-react";
-import { PaymentModal } from "@/components/payment-modal";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useMyLearning } from "@/hooks/use-my-learning";
 
 export default function CourseDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const courseId = params.id as string;
 
-  const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
-  const { enrolledCourses, addCourse, isLoaded } = useMyLearning();
+  const { enrolledCourses, isLoaded } = useMyLearning();
   
   const course = courses.find((c) => c.id === courseId);
 
-  // Derived state is better than a separate state for isEnrolled
   const isEnrolled = isLoaded && enrolledCourses.some(enrolledCourse => enrolledCourse.id === course?.id);
 
   if (!course) {
@@ -44,13 +42,8 @@ export default function CourseDetailPage() {
 
   const handleEnroll = () => {
     if (!isEnrolled) {
-      setPaymentModalOpen(true);
+      router.push(`/dashboard/courses/${courseId}/payment`);
     }
-  }
-
-  const handlePaymentSuccess = () => {
-    addCourse(course);
-    setPaymentModalOpen(false);
   }
 
   return (
@@ -168,12 +161,6 @@ export default function CourseDetailPage() {
           </Card>
         </div>
       </div>
-      {!isEnrolled && <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onOpenChange={setPaymentModalOpen}
-        course={course}
-        onPaymentSuccess={handlePaymentSuccess}
-      />}
     </>
   );
 }
