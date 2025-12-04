@@ -106,7 +106,7 @@ export default function PaymentPage() {
                         Amount: <span className="text-primary">₹{course.price}</span>
                     </div>
                 </div>
-                 <Button asChild className="w-full md:hidden">
+                 <Button asChild className="w-full">
                     <a href={upiUrl}>
                       <Wallet className="mr-2 h-4 w-4" />
                       Pay with UPI App
