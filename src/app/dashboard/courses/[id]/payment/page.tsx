@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { generateUpiUrl } from "@/lib/upi";
 
 export default function PaymentPage() {
   const params = useParams();
@@ -31,11 +32,20 @@ export default function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const course = courses.find((c) => c.id === courseId);
-  const phonePeQrImage = PlaceHolderImages.find((p) => p.id === "phonepe-qr");
 
   if (!course) {
     notFound();
   }
+  
+  const upiUrl = generateUpiUrl({
+    payeeVpa: 'revanth.nagidi-1@okicici',
+    payeeName: 'Mr Nagidi Revanth',
+    amount: course.price,
+    transactionNote: `Payment for ${course.title}`
+  });
+
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
+
 
   const handleVerifyAndEnroll = () => {
     if (!transactionId) {
@@ -77,15 +87,14 @@ export default function PaymentPage() {
             <div className="text-center space-y-2">
                 <div className="flex justify-center">
                     <div className="p-4 bg-white rounded-lg inline-block shadow-md">
-                    {phonePeQrImage && (
-                        <Image
-                        src={phonePeQrImage.imageUrl}
-                        alt="PhonePe UPI QR Code for Mr Nagidi Revanth"
-                        width={220}
-                        height={220}
-                        data-ai-hint={phonePeQrImage.imageHint}
-                        />
-                    )}
+                    <Image
+                      src={qrCodeUrl}
+                      alt="UPI QR Code for Mr Nagidi Revanth"
+                      width={220}
+                      height={220}
+                      data-ai-hint="qr code"
+                      unoptimized // Required for external URL based images which are not in next.config.js
+                    />
                     </div>
                 </div>
                  <p className="font-semibold text-foreground">Mr Nagidi Revanth</p>

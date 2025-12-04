@@ -20,7 +20,7 @@ export function generateUpiUrl(options: UpiOptions): string {
     const params = new URLSearchParams();
     params.set('pa', payeeVpa);
     params.set('pn', payeeName);
-    params.set('am', amount.toString());
+    params.set('am', amount.toFixed(2));
     params.set('cu', currency);
     if (transactionNote) {
         params.set('tn', transactionNote);
