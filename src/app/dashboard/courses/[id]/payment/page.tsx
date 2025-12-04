@@ -80,7 +80,7 @@ export default function PaymentPage() {
                     {phonePeQrImage && (
                         <Image
                         src={phonePeQrImage.imageUrl}
-                        alt="PhonePe UPI QR Code"
+                        alt="PhonePe UPI QR Code for Mr Nagidi Revanth"
                         width={220}
                         height={220}
                         data-ai-hint={phonePeQrImage.imageHint}
@@ -88,6 +88,7 @@ export default function PaymentPage() {
                     )}
                     </div>
                 </div>
+                 <p className="font-semibold text-foreground">Mr Nagidi Revanth</p>
                 <p className="text-sm text-muted-foreground">
                     Scan the QR code with any UPI app
                 </p>
