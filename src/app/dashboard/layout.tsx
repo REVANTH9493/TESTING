@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { UserNav } from "@/components/user-nav";
@@ -27,50 +26,58 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
 
-  const navContent = (
-    <>
-      <Link
-        href="/dashboard"
-        className="flex items-center gap-2 font-bold font-headline text-lg px-4"
+  const navHeader = (
+    <Link
+      href="/dashboard"
+      className="flex items-center gap-2 font-bold font-headline text-lg"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-6 w-6 text-primary"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="h-6 w-6 text-primary"
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+      U-Learn
+    </Link>
+  );
+
+  const navLinks = (
+    <nav className="grid items-start text-sm font-medium">
+      {NAV_ITEMS.map((item) => (
+        <Link
+          key={item.label}
+          href={item.href}
+          className={cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+            pathname === item.href && "bg-muted text-primary"
+          )}
         >
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-        </svg>
-        U-Learn
-      </Link>
-      <nav className="grid items-start px-4 text-sm font-medium mt-8">
-        {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-              pathname === item.href && "bg-muted text-primary"
-            )}
-          >
-            <item.icon className="h-4 w-4" />
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-    </>
+          <item.icon className="h-4 w-4" />
+          {item.label}
+        </Link>
+      ))}
+    </nav>
   );
 
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 lg:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-[60px] items-center border-b px-6">{navContent}</div>
+          <div className="flex h-[60px] items-center border-b px-6">
+            {navHeader}
+          </div>
+          <div className="flex-1 overflow-auto py-2">
+            <div className="px-4">
+             {navLinks}
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col">
@@ -82,8 +89,13 @@ export default function DashboardLayout({
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[280px]">
-              <SheetHeader className="h-[60px]">{navContent}</SheetHeader>
+            <SheetContent side="left" className="flex flex-col">
+                <div className="flex h-[60px] items-center border-b px-6">
+                    {navHeader}
+                </div>
+                <div className="px-4 py-2">
+                    {navLinks}
+                </div>
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
