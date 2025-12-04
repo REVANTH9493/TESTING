@@ -38,7 +38,7 @@ export default function PaymentPage() {
   }
   
   const upiUrl = generateUpiUrl({
-    payeeVpa: 'payment@example',
+    payeeVpa: 'revanthnagidi1@ibl',
     payeeName: 'Mr Nagidi Revanth',
     amount: course.price,
     transactionNote: `Payment for ${course.title}`
